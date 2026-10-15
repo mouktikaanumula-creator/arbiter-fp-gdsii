@@ -20,3 +20,31 @@ module arbiter_fp (
     end
 
 endmodule
+
+module tt_um_arbiter_fp (
+    input  wire [7:0] ui_in,
+    output wire [7:0] uo_out,
+    input  wire [7:0] uio_in,
+    output wire [7:0] uio_out,
+    output wire [7:0] uio_oe,
+    input  wire       ena,
+    input  wire       clk,
+    input  wire       rst_n
+);
+
+    wire [3:0] grant_internal;
+
+    arbiter_fp dut (
+        .clk(clk),
+        .rst(~rst_n),
+        .req(ui_in[3:0]),
+        .grant(grant_internal)
+    );
+
+    assign uo_out  = {4'b0000, grant_internal};
+    assign uio_out = 8'b0;
+    assign uio_oe  = 8'b0;
+
+    wire _unused = &{ena, uio_in, ui_in[7:4], 1'b0};
+
+endmodule
